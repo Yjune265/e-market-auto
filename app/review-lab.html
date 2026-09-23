@@ -1,0 +1,1390 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>찐리뷰 노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F2F4F1; --surface:#FFFFFF; --sunk:#E8ECE8; --ink:#17252A; --muted:#5A686C; --line:#D3DAD6;
+  --accent:#2944C4; --accent-ink:#FFFFFF; --accent-soft:#E3E8FB;
+  --real:#1D7F52; --real-soft:#DDF1E6; --maybe:#A86A12; --maybe-soft:#F8ECD6; --sus:#B83B12; --sus-soft:#FAE3DA;
+  --focus:#2944C4; --shadow:0 1px 2px rgba(23,37,42,.06),0 4px 14px rgba(23,37,42,.06);
+  --f-ui:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-read:"Gowun Batang","AppleMyungjo","Nanum Myeongjo",serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#101517; --surface:#182023; --sunk:#1F292C; --ink:#E4ECE9; --muted:#9AAAA6; --line:#2C3A3D;
+    --accent:#8FA3FF; --accent-ink:#0E1430; --accent-soft:#232D55;
+    --real:#5CCB95; --real-soft:#173427; --maybe:#E0A94A; --maybe-soft:#3A2D14; --sus:#F08A62; --sus-soft:#3D2016;
+    --focus:#8FA3FF; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#101517; --surface:#182023; --sunk:#1F292C; --ink:#E4ECE9; --muted:#9AAAA6; --line:#2C3A3D;
+  --accent:#8FA3FF; --accent-ink:#0E1430; --accent-soft:#232D55;
+  --real:#5CCB95; --real-soft:#173427; --maybe:#E0A94A; --maybe-soft:#3A2D14; --sus:#F08A62; --sus-soft:#3D2016;
+  --focus:#8FA3FF; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{background:var(--ground)}
+body{margin:0;color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.55;word-break:keep-all;padding-inline:16px;padding-block:0 104px;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.3}
+.wrap{max-width:760px;margin:0 auto}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.eyebrow{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px 10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.brand h1 b{color:var(--accent)}
+.store-pill{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.store-pill.ok{background:var(--real-soft);color:var(--real)}
+.store-pill.local{background:var(--maybe-soft);color:var(--maybe)}
+
+/* nav */
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;margin-block:4px 16px}
+.tab{flex:1;border:0;background:transparent;border-radius:10px;padding:9px 6px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px;font-size:14px}
+.tab small{font-weight:500;font-size:11px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+@media (max-width:759px){
+  .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;border-radius:0;border-width:1px 0 0;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));z-index:20;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+}
+
+/* generic surfaces */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.panel h2{font-size:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grow{flex:1 1 180px;min-width:0}
+.stack{display:flex;flex-direction:column;gap:14px}
+label.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted);font-weight:500}
+input[type=text],input[type=url],input[type=number],select,textarea{background:var(--ground);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);width:100%;min-width:0}
+textarea{resize:vertical;line-height:1.6}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;font-weight:600;min-height:44px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--sus);border-color:var(--sus)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.wide{width:100%}
+.note{font-size:13px;color:var(--muted);background:var(--sunk);border-radius:10px;padding:10px 12px}
+.note.warn{background:var(--maybe-soft);color:var(--maybe)}
+.note.bad{background:var(--sus-soft);color:var(--sus)}
+.note.good{background:var(--real-soft);color:var(--real)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:12px;font-size:14px;z-index:40;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+@media (min-width:760px){.toast{bottom:24px}}
+
+/* progress */
+.progress{display:flex;flex-direction:column;gap:6px}
+.progress .bar{height:6px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.progress .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.progress .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);gap:8px;flex-wrap:wrap}
+
+/* review slip */
+.slip{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+.slip-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.slip-prod{font-weight:600;font-size:14px;overflow-wrap:anywhere}
+.slip-sub{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap}
+.stars{font-size:15px;letter-spacing:1px;color:var(--maybe);white-space:nowrap}
+.stars .off{color:var(--line)}
+.nostar{font-size:13px;color:var(--muted);white-space:nowrap}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:12px;padding:2px 8px;border-radius:6px;background:var(--sunk);color:var(--muted);font-weight:500}
+.badge.trial{background:var(--sus-soft);color:var(--sus)}
+.badge.redo{background:var(--accent-soft);color:var(--accent)}
+.badge.demo{background:var(--maybe-soft);color:var(--maybe)}
+.slip-text{font-family:var(--f-read);font-size:17px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;max-height:52vh;overflow:auto}
+.slip-foot{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);gap:8px;flex-wrap:wrap}
+
+/* judging controls */
+.judge{display:flex;flex-direction:column;gap:14px}
+.axis{display:flex;flex-direction:column;gap:7px}
+.axis-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.axis-head h3{font-size:14px;font-weight:600}
+.axis-head .hint{font-size:12px;color:var(--muted)}
+.seg{display:grid;gap:6px}
+.seg.c4{grid-template-columns:repeat(4,1fr)}
+.seg.c3{grid-template-columns:repeat(3,1fr)}
+.seg.c5{grid-template-columns:repeat(5,1fr)}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:10px;min-height:48px;padding:6px 4px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.2}
+.seg button small{font-weight:500;font-size:11px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.seg button[aria-pressed="true"] small{color:inherit;opacity:.85}
+.seg.compact button{min-height:40px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:500;min-height:36px}
+.chip.ev[aria-pressed="true"]{background:var(--real-soft);border-color:var(--real);color:var(--real)}
+.chip.pr[aria-pressed="true"]{background:var(--sus-soft);border-color:var(--sus);color:var(--sus)}
+.chip-group{display:flex;flex-direction:column;gap:6px}
+.chip-group .eyebrow{font-size:11px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.tag.real{background:var(--real-soft);color:var(--real)}
+.tag.maybe{background:var(--maybe-soft);color:var(--maybe)}
+.tag.sus{background:var(--sus-soft);color:var(--sus)}
+.actions{position:sticky;bottom:calc(72px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--ground) 70%,transparent);padding-block:10px 4px;display:flex;flex-direction:column;gap:8px;z-index:5}
+@media (min-width:760px){.actions{bottom:0}}
+.save-row{display:flex;gap:8px;align-items:stretch}
+.save-row .btn{min-height:52px;padding-inline:12px}
+.save-row .btn.primary{flex:1;font-size:16px}
+.kbd{font-family:var(--f-num);font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 4px;color:var(--muted)}
+.keys{font-size:12px;color:var(--muted);display:none;gap:10px;flex-wrap:wrap}
+@media (min-width:760px) and (hover:hover){.keys{display:flex}}
+details.more{border-top:1px dashed var(--line);padding-top:10px}
+details.more summary{cursor:pointer;font-size:13px;color:var(--muted);font-weight:600}
+details.more[open] summary{margin-bottom:10px}
+
+/* collect */
+.prod-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.prod{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-top:1px solid var(--line);background:var(--surface);flex-wrap:wrap}
+.prod:first-child{border-top:0}
+.prod .name{font-weight:600;overflow-wrap:anywhere}
+.prod .counts{font-size:12px;color:var(--muted)}
+.prod.sel{background:var(--accent-soft)}
+.preview{display:flex;flex-direction:column;gap:10px}
+.pv{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.pv.dup{opacity:.55}
+.pv-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pv-top select{width:auto;padding:6px 8px}
+.pv-top input[type=text]{width:auto;flex:1 1 120px;padding:6px 8px}
+.pv textarea{font-family:var(--f-read);font-size:15px;min-height:72px}
+.toggle{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:500}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.progress .bar i{transition:none}}
+
+/* stats */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.tile .v{font-family:var(--f-num);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums}
+.tile .k{font-size:12px;color:var(--muted)}
+.scroll{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:13px}
+table.t th,table.t td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{font-weight:600;color:var(--muted);font-size:12px}
+table.t td.cell{font-family:var(--f-num)}
+.heat{border-radius:6px;display:inline-block;min-width:34px;padding:2px 6px;text-align:center}
+.stack-bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--sunk);min-width:120px}
+.stack-bar i{display:block;height:100%}
+.hbar{display:grid;grid-template-columns:minmax(90px,150px) 1fr auto;gap:8px;align-items:center;font-size:13px}
+.hbar .track{height:8px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.hbar .track i{display:block;height:100%;border-radius:99px}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;background:var(--c)}
+.empty{text-align:center;padding:28px 16px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.empty h2{font-size:17px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>찐리뷰 <b>노트</b></h1><span class="muted small">리뷰 수집과 판정</span></div>
+    <span id="storePill" class="store-pill">불러오는 중</span>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="화면">
+    <button class="tab" role="tab" id="tab-judge" aria-controls="view-judge" aria-selected="true" data-view="judge">판정<small id="navPool">풀 0</small></button>
+    <button class="tab" role="tab" id="tab-collect" aria-controls="view-collect" aria-selected="false" data-view="collect">수집<small>붙여넣기</small></button>
+    <button class="tab" role="tab" id="tab-stats" aria-controls="view-stats" aria-selected="false" data-view="stats">현황<small id="navDone">0개</small></button>
+    <button class="tab" role="tab" id="tab-settings" aria-controls="view-settings" aria-selected="false" data-view="settings">설정<small>내보내기</small></button>
+  </nav>
+
+  <main>
+    <section id="view-judge" role="tabpanel" aria-labelledby="tab-judge"></section>
+    <section id="view-collect" role="tabpanel" aria-labelledby="tab-collect" hidden></section>
+    <section id="view-stats" role="tabpanel" aria-labelledby="tab-stats" hidden></section>
+    <section id="view-settings" role="tabpanel" aria-labelledby="tab-settings" hidden></section>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- 기본 도구 ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = (p) => p + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const nowISO = () => new Date().toISOString();
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const clone = (o) => JSON.parse(JSON.stringify(o));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+let toastTimer = 0;
+function toast(msg, ms = 2600) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, ms);
+}
+
+/* ---------- 라벨 체계 ---------- */
+const PLATFORMS = ["스마트스토어", "쿠팡", "기타"];
+const BADGES = ["체험단", "한달사용", "재구매", "포토"];
+const EVIDENCE = [
+  { v: 0, t: "없음", s: "경험 없음" },
+  { v: 1, t: "약함", s: "일반적 언급" },
+  { v: 2, t: "구체적", s: "상황·기간" },
+  { v: 3, t: "매우 구체적", s: "경험 서술" },
+];
+const PROMO = [
+  { v: 0, t: "없음", s: "자연스러움" },
+  { v: 1, t: "약함", s: "조금 걸림" },
+  { v: 2, t: "강함", s: "홍보 같음" },
+];
+const DEFAULT_SETTINGS = {
+  weeklyGoal: 30,
+  rejudgeRatio: 0.1,
+  rejudgeMinDays: 14,
+  holdoutRatio: 0.2,
+  evidenceChips: ["사용 기간", "사용 상황", "예상과 다른 경험", "작은 단점", "개인 맥락", "비교 경험", "재구매·반복 사용"],
+  promoChips: ["홍보성 표현", "과도한 찬양", "상품 설명과 비슷함", "대가 표시(체험단 등)", "내용 없음"],
+};
+const TAGS = ["찐", "애매", "의심"];
+const TAG_CLASS = { "찐": "real", "애매": "maybe", "의심": "sus" };
+const TAG_COLOR = { "찐": "var(--real)", "애매": "var(--maybe)", "의심": "var(--sus)" };
+
+/* 두 축에서 기존 3단계 태그를 계산한다. */
+function deriveTag(ev, pr) {
+  if (pr === 2 || (pr === 1 && ev <= 1)) return "의심";
+  if (ev >= 2 && pr === 0) return "찐";
+  return "애매";
+}
+const LEN_BUCKETS = ["짧음", "보통", "긺"];
+function lenBucket(n) { return n < 40 ? "짧음" : n <= 150 ? "보통" : "긺"; }
+function textLen(t) { return String(t || "").replace(/\s+/g, "").length; }
+function normText(t) { return String(t || "").replace(/[\s\p{P}\p{S}]/gu, "").slice(0, 120); }
+function weekStart(d = new Date()) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return x;
+}
+function fmtDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d)) return "";
+  return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+function starsHTML(n) {
+  if (!n) return `<span class="nostar">별점 없음</span>`;
+  return `<span class="stars" aria-label="별점 ${n}점">${"★".repeat(n)}<span class="off">${"★".repeat(5 - n)}</span></span>`;
+}
+
+/* ---------- 저장소: Claude 저장소(db) 또는 이 기기(localStorage) ---------- */
+const LS_KEY = "review-lab-v1";
+const DOC_CAP = 5000;
+const Store = {
+  mode: "loading",
+  db: null,
+  ready: false,
+  reviews: new Map(),
+  products: new Map(),
+  settings: clone(DEFAULT_SETTINGS),
+  listeners: new Set(),
+  onChange(fn) { this.listeners.add(fn); },
+  emit() { for (const fn of this.listeners) { try { fn(); } catch (e) { console.error(e); } } },
+};
+const Caps = { sample: null, downloads: null };
+
+async function capability(name) {
+  try {
+    const c = window.claude;
+    if (!c || typeof c.use !== "function") return null;
+    return await c.use(name);
+  } catch { return null; }
+}
+
+function dbErrorText(e) {
+  const code = e && e.code;
+  if (code === "quota_exceeded") return "저장 공간이 가득 찼습니다. 설정에서 백업을 내려받은 뒤 오래된 리뷰를 지우세요.";
+  if (code === "resource_exhausted") return "요청이 너무 많습니다. 잠시 뒤 다시 시도하세요.";
+  if (code === "revoked" || code === "not_granted") return "저장소 권한이 없어 읽기 전용으로 표시합니다.";
+  return "저장하지 못했습니다. 연결을 확인한 뒤 다시 시도하세요.";
+}
+
+async function withRetry(fn) {
+  try { return await fn(); }
+  catch (e) {
+    if (e && e.code === "unavailable") { await sleep(300 + Math.random() * 500); return await fn(); }
+    throw e;
+  }
+}
+
+function initDb(db) {
+  Store.mode = "db";
+  Store.db = db;
+  const got = { r: false, p: false, s: false };
+  const settle = () => { if (got.r && got.p && got.s) Store.ready = true; Store.emit(); };
+  const onErr = (e) => { toast(dbErrorText(e), 5000); };
+  db.collection("reviews").onSnapshot((snap) => {
+    const m = new Map();
+    for (const d of snap.docs) m.set(d.id, { ...d.data(), id: d.id });
+    Store.reviews = m; got.r = true; settle();
+  }, onErr);
+  db.collection("products").onSnapshot((snap) => {
+    const m = new Map();
+    for (const d of snap.docs) m.set(d.id, { ...d.data(), id: d.id });
+    Store.products = m; got.p = true; settle();
+  }, onErr);
+  db.doc("meta/settings").onSnapshot((s) => {
+    Store.settings = { ...clone(DEFAULT_SETTINGS), ...(s.exists ? clone(s.data()) : {}) };
+    got.s = true; settle();
+  }, onErr);
+}
+
+function initLocal() {
+  Store.mode = "local";
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      const o = JSON.parse(raw);
+      for (const r of o.reviews || []) Store.reviews.set(r.id, r);
+      for (const p of o.products || []) Store.products.set(p.id, p);
+      Store.settings = { ...clone(DEFAULT_SETTINGS), ...(o.settings || {}) };
+    }
+    localStorage.setItem(LS_KEY + "-probe", "1");
+    localStorage.removeItem(LS_KEY + "-probe");
+  } catch { Store.mode = "memory"; }
+  Store.ready = true;
+  Store.emit();
+}
+
+function persistLocal() {
+  if (Store.mode !== "local") return;
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      reviews: [...Store.reviews.values()],
+      products: [...Store.products.values()],
+      settings: Store.settings,
+    }));
+  } catch { toast("이 브라우저에 저장하지 못했습니다. 설정 화면에서 백업 파일을 받아 두세요.", 5000); }
+}
+
+/* 문서 전체를 쓴다. 화면은 먼저 바꾸고 저장소 반영은 뒤따른다. */
+async function putDoc(coll, obj) {
+  const body = clone(obj);
+  Store[coll].set(obj.id, body);
+  if (Store.mode === "db") {
+    Store.emit();
+    await withRetry(() => Store.db.collection(coll).doc(obj.id).set(body));
+  } else { persistLocal(); Store.emit(); }
+}
+async function removeDoc(coll, id) {
+  Store[coll].delete(id);
+  if (Store.mode === "db") {
+    Store.emit();
+    await withRetry(() => Store.db.collection(coll).doc(id).delete());
+  } else { persistLocal(); Store.emit(); }
+}
+async function putSettings(next) {
+  Store.settings = clone(next);
+  if (Store.mode === "db") {
+    Store.emit();
+    await withRetry(() => Store.db.doc("meta/settings").set(clone(next)));
+  } else { persistLocal(); Store.emit(); }
+}
+/* 여러 문서를 몇 개씩 나눠 쓴다. */
+async function putMany(coll, list, onProgress) {
+  let done = 0;
+  const queue = list.slice();
+  const worker = async () => {
+    while (queue.length) {
+      const item = queue.shift();
+      await putDoc(coll, item);
+      done++;
+      onProgress && onProgress(done, list.length);
+    }
+  };
+  const n = Store.mode === "db" ? 3 : 1;
+  await Promise.all(Array.from({ length: n }, worker));
+}
+
+/* ---------- 붙여넣은 텍스트를 개별 리뷰로 나누기 ---------- */
+const PARSE_LIMIT = 24000;
+const DATE_RE = /(20\d{2}|\d{2})\s*[.\-/]\s*(\d{1,2})\s*[.\-/]\s*(\d{1,2})\.?/;
+const STAR_RE = /^(?:평점|별점)\s*[:：]?\s*([1-5])(?:\s*점)?$|^([1-5])\s*점$|^5점\s*만점에\s*([1-5])점/;
+const NOISE_RE = /^(신고하기|신고|도움이 ?돼요|도움돼요|도움 ?안 ?돼요|도움이 ?안 ?돼요|답글|답글쓰기|더보기|접기|펼쳐보기|리뷰 더보기|판매자 답변|사진|이미지|동영상|좋아요|추천|비추천|\d+|\d+\s*\/\s*\d+)$/;
+
+function normDate(s) {
+  const m = String(s || "").match(/(20\d{2}|\d{2})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})/);
+  if (!m) return "";
+  const y = m[1].length === 2 ? "20" + m[1] : m[1];
+  return `${y}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+}
+function isNick(l) { return /\*/.test(l) && l.length <= 20 && l.split(/\s+/).length <= 2; }
+function isStarLine(l) { return STAR_RE.test(l) || /^[★☆]{1,5}$/.test(l); }
+function isDateLine(l) { return l.length <= 40 && DATE_RE.test(l); }
+
+function parseChunk(ls) {
+  let star = null, date = "", option = "", helpful = null;
+  const badges = new Set();
+  const body = [];
+  for (const raw of ls) {
+    const l = raw.trim();
+    if (!l) { if (body.length && body[body.length - 1] !== "") body.push(""); continue; }
+    let m;
+    if ((m = l.match(STAR_RE))) { star = +(m[1] || m[2] || m[3]); continue; }
+    if (/^[★☆]{1,5}$/.test(l)) { star = (l.match(/★/g) || []).length || null; continue; }
+    if (isDateLine(l)) { if (!date) date = normDate(l); continue; }
+    if ((m = l.match(/(\d[\d,]*)\s*명(?:에게|이)?\s*도움/))) { helpful = +m[1].replace(/,/g, ""); continue; }
+    if (/체험단|제공받아|무상으로 제공/.test(l)) {
+      badges.add("체험단");
+      if (l.length <= 20 || /제공받아|무상으로|이벤트로/.test(l)) continue;
+    }
+    if (/^한\s?달\s?사용/.test(l) && l.length <= 12) { badges.add("한달사용"); continue; }
+    if (/^재구매/.test(l) && l.length <= 8) { badges.add("재구매"); continue; }
+    if (/^포토/.test(l) && l.length <= 8) { badges.add("포토"); continue; }
+    if (/^(옵션|선택|구매\s?옵션|상품\s?옵션|사이즈|색상|판매자)\s*[:：]/.test(l)) { option = option ? option + " / " + l : l; continue; }
+    if (isNick(l) || NOISE_RE.test(l)) continue;
+    body.push(l);
+  }
+  const text = body.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  if (textLen(text) < 2) return null;
+  return { star, date, option: option.slice(0, 200), badges: [...badges], helpful, text };
+}
+
+/* 규칙 기반: 날짜 줄을 리뷰 경계로 본다. 날짜가 없으면 빈 줄로 나눈다. */
+function ruleParse(raw) {
+  const lines = String(raw || "").replace(/\r/g, "").split("\n");
+  const hasDates = lines.some((l) => isDateLine(l.trim()));
+  let chunks = [];
+  if (hasDates) {
+    let cur = [];
+    const hasBody = (arr) => arr.some((x) => {
+      const t = x.trim();
+      return t && !isDateLine(t) && !isStarLine(t) && !isNick(t) && !NOISE_RE.test(t);
+    });
+    for (const l of lines) {
+      if (isDateLine(l.trim()) && hasBody(cur)) {
+        const carry = [];
+        while (cur.length) {
+          const t = cur[cur.length - 1].trim();
+          if (!t || isStarLine(t) || isNick(t)) carry.unshift(cur.pop()); else break;
+        }
+        chunks.push(cur);
+        cur = carry;
+      }
+      cur.push(l);
+    }
+    chunks.push(cur);
+  } else {
+    chunks = String(raw || "").replace(/\r/g, "").split(/\n\s*\n+/).map((b) => b.split("\n"));
+  }
+  return chunks.map(parseChunk).filter(Boolean);
+}
+
+function normalizeParsed(o) {
+  if (!o || typeof o !== "object") return null;
+  const text = String(o.text || "").trim();
+  if (textLen(text) < 2) return null;
+  let star = Number.parseInt(o.star, 10);
+  if (!(star >= 1 && star <= 5)) star = null;
+  let date = String(o.date || "").trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) date = normDate(date);
+  const badges = Array.isArray(o.badges) ? [...new Set(o.badges.map(String).filter((b) => BADGES.includes(b)))] : [];
+  let helpful = Number.parseInt(o.helpful, 10);
+  if (!Number.isFinite(helpful) || helpful < 0) helpful = null;
+  return { star, date, option: String(o.option || "").trim().slice(0, 200), badges, helpful, text };
+}
+
+async function aiParse(raw, platform, signal) {
+  const text = String(raw).slice(0, PARSE_LIMIT);
+  const prompt = [
+    `아래는 사용자가 ${platform} 상품 페이지의 리뷰 영역을 복사한 텍스트다. 개별 리뷰로 나눠라.`,
+    "JSON 배열 하나로만 답하라. 각 원소의 형식:",
+    '{"star": 1~5 정수 또는 null, "date": "YYYY-MM-DD" 또는 "", "option": 구매 옵션 문자열 또는 "", "badges": ["체험단","한달사용","재구매","포토"] 중 해당하는 것, "helpful": 도움돼요 수 정수 또는 null, "text": 리뷰 본문}',
+    "규칙:",
+    "- 작성자 닉네임, 아이디, 프로필 정보는 어디에도 넣지 마라.",
+    "- 본문은 고치거나 요약하지 말고 원문 그대로 옮겨라. 리뷰 제목이 있으면 본문 첫 줄에 둔다.",
+    "- 판매자 답글, 메뉴, 버튼 문구, 광고, 상품 설명은 제외하라.",
+    "- 체험단·무상 제공·대가 관련 안내 문구가 붙은 리뷰는 badges에 체험단을 넣고 그 안내 문구는 본문에서 뺀다.",
+    "- 연도가 두 자리면 20을 붙인다. 알 수 없는 값은 null 또는 빈 문자열로 둔다.",
+    "- 리뷰가 하나도 없으면 [] 로 답한다.",
+    "",
+    "<복사한 텍스트>",
+    text,
+    "</복사한 텍스트>",
+  ].join("\n");
+  const out = await Caps.sample.json(prompt, { modelTier: "quick", signal });
+  if (!Array.isArray(out)) throw { code: "invalid_json", message: "배열이 아님" };
+  return out.map(normalizeParsed).filter(Boolean);
+}
+
+function sampleErrorText(e) {
+  switch (e && e.code) {
+    case "not_granted": case "sampling_disabled": case "not_declared": case "capability_disabled": case "capability_removed":
+      return "AI 나누기를 쓸 수 없어 규칙 기반으로 나눴습니다.";
+    case "rate_limited": return "AI 요청이 많아 규칙 기반으로 나눴습니다. 잠시 뒤 다시 시도할 수 있습니다.";
+    case "prompt_too_large": return "텍스트가 너무 길어 규칙 기반으로 나눴습니다. 더 짧게 나눠 붙여넣으세요.";
+    case "invalid_json": case "empty_completion": case "refused":
+      return "AI가 리뷰를 나누지 못해 규칙 기반으로 나눴습니다.";
+    case "session_expired": return "Claude 로그인이 만료되어 규칙 기반으로 나눴습니다.";
+    default: return "AI 연결에 실패해 규칙 기반으로 나눴습니다.";
+  }
+}
+
+/* 나누기 결과를 시험해 볼 수 있는 예시 텍스트. 실제 리뷰가 아니다. */
+const EXAMPLE_PASTE = `김*준
+2026.08.14
+판매자: 예시상점  옵션: 화이트 / 1개
+처음엔 흡입력이 약한 줄 알았는데 원룸 바닥 머리카락은 오히려 유선보다 잘 빨아들여요.
+3주째 이틀에 한 번 쓰는데 배터리는 20분 정도 가고, 먼지통 비울 때 손에 묻는 게 단점입니다.
+12명에게 도움 됨
+신고하기
+이*연
+2026.08.10
+판매자: 예시상점  옵션: 그레이 / 1개
+최고예요!! 강력 추천합니다 가성비 최고 디자인 최고 성능 최고
+쿠팡체험단 이벤트로 상품을 무료로 제공받아 작성된 후기입니다.
+박*호
+2026.08.02
+판매자: 예시상점  옵션: 화이트 / 1개
+배송 빨라요 잘 쓸게요`;
+
+const DEMO_REVIEW = {
+  id: "demo", productId: "demo", star: 4, date: "2026-08-14", option: "화이트 / 1개", badges: ["한달사용"], helpful: 12,
+  text: "처음엔 흡입력이 약한 줄 알았는데 원룸 바닥 머리카락은 오히려 유선보다 잘 빨아들여요.\n3주째 이틀에 한 번 쓰는데 배터리는 20분 정도 가고, 먼지통 비울 때 손에 묻는 게 단점입니다.",
+};
+const DEMO_PRODUCT = { id: "demo", name: "예시 상품 · 무선 청소기", platform: "쿠팡", category: "생활가전" };
+
+/* ---------- 판정 화면 ---------- */
+const J = { current: null, draft: null, skipped: new Set(), lastProductId: null, undo: null, delAsk: false };
+function newDraft(prev) {
+  return {
+    evidence: prev ? prev.evidence : null,
+    promo: prev ? prev.promo : null,
+    confidence: prev ? prev.confidence ?? null : null,
+    chips: prev ? (prev.chips || []).slice() : [],
+    note: prev ? prev.note || "" : "",
+    split: prev ? prev.split : undefined,
+  };
+}
+const allReviews = () => [...Store.reviews.values()];
+const poolCount = () => allReviews().filter((r) => !r.label).length;
+function weekCount() {
+  const ws = weekStart().getTime();
+  let n = 0;
+  for (const r of Store.reviews.values()) {
+    if (r.label && Date.parse(r.label.at) >= ws) n++;
+    if (r.rejudge && Date.parse(r.rejudge.at) >= ws) n++;
+  }
+  return n;
+}
+const strataKey = (r) => (r.star || 0) + "|" + lenBucket(r.len ?? textLen(r.text));
+
+/* 다음 리뷰 고르기: 일정 확률로 오래된 판정을 가려서 다시 묻고,
+   나머지는 별점×길이 칸 가운데 판정이 가장 적은 칸에서 고른다. */
+function pickNext() {
+  const s = Store.settings;
+  const all = allReviews();
+  const labeled = all.filter((r) => r.label);
+  const minMs = (Number(s.rejudgeMinDays) || 14) * 86400000;
+  const rejudge = labeled.filter((r) => !r.rejudge && Date.now() - Date.parse(r.label.at) >= minMs && !J.skipped.has(r.id));
+  let pool = all.filter((r) => !r.label && !J.skipped.has(r.id));
+  if (!pool.length && !rejudge.length && J.skipped.size) {
+    J.skipped.clear();
+    pool = all.filter((r) => !r.label);
+  }
+  if (rejudge.length && (!pool.length || Math.random() < (Number(s.rejudgeRatio) || 0))) {
+    return { id: pick(rejudge).id, redo: true };
+  }
+  if (!pool.length) return null;
+  const counts = new Map();
+  for (const r of labeled) counts.set(strataKey(r), (counts.get(strataKey(r)) || 0) + 1);
+  let best = Infinity, cands = [];
+  for (const r of pool) {
+    let c = counts.get(strataKey(r)) || 0;
+    if (r.productId === J.lastProductId) c += 0.5;
+    if (c < best) { best = c; cands = [r]; } else if (c === best) cands.push(r);
+  }
+  return { id: pick(cands).id, redo: false };
+}
+
+function ensureCurrent() {
+  if (Store.reviews.size === 0) {
+    if (!J.current || J.current.id !== "demo") { J.current = { id: "demo", redo: false }; J.draft = newDraft(); }
+    return;
+  }
+  const r = J.current && Store.reviews.get(J.current.id);
+  const valid = r && (J.current.redo ? r.label && !r.rejudge : !r.label);
+  if (valid) return;
+  J.current = pickNext();
+  J.draft = newDraft();
+  J.delAsk = false;
+}
+
+function nextRejudgeDate() {
+  const minMs = (Number(Store.settings.rejudgeMinDays) || 14) * 86400000;
+  let soonest = Infinity;
+  for (const r of Store.reviews.values()) if (r.label && !r.rejudge) soonest = Math.min(soonest, Date.parse(r.label.at) + minMs);
+  return isFinite(soonest) ? new Date(soonest) : null;
+}
+
+function progressHTML() {
+  const goal = Math.max(1, Number(Store.settings.weeklyGoal) || 30);
+  const wk = weekCount();
+  const pct = Math.min(100, Math.round((wk / goal) * 100));
+  return `<div class="progress" aria-label="이번 주 진행">
+    <div class="meta"><span>이번 주 <b class="num">${wk}</b> / <span class="num">${goal}</span></span><span>판정 대기 <b class="num">${poolCount()}</b>개</span></div>
+    <div class="bar"><i style="width:${pct}%"></i></div></div>`;
+}
+
+function segHTML(act, items, cls, sel) {
+  return `<div class="seg ${cls}" role="group">${items.map((it) =>
+    `<button type="button" data-act="${act}" data-v="${it.v}" aria-pressed="${sel === it.v}">${esc(it.v === undefined ? it.t : it.label ?? it.t)}${it.s ? `<small>${esc(it.s)}</small>` : ""}</button>`).join("")}</div>`;
+}
+
+function renderJudge() {
+  const v = $("#view-judge");
+  if (!Store.ready) { v.innerHTML = `<div class="panel"><p class="muted"><span class="spin"></span> 데이터를 불러오는 중입니다.</p></div>`; return; }
+  ensureCurrent();
+  if (!J.current) {
+    const nd = nextRejudgeDate();
+    v.innerHTML = `<div class="stack">${progressHTML()}
+      <div class="panel empty"><h2>지금 판정할 리뷰가 없습니다</h2>
+      <p class="muted">수집 화면에서 상품 페이지의 리뷰를 붙여넣으면 여기로 넘어옵니다.${nd ? `<br>다음 재판정은 <b>${nd.getMonth() + 1}월 ${nd.getDate()}일</b>부터 나옵니다.` : ""}</p>
+      <button class="btn primary" data-go="collect">리뷰 수집하러 가기</button></div></div>`;
+    return;
+  }
+  const demo = J.current.id === "demo";
+  const r = demo ? DEMO_REVIEW : Store.reviews.get(J.current.id);
+  const p = demo ? DEMO_PRODUCT : Store.products.get(r.productId) || { name: "상품 정보 없음" };
+  const d = J.draft;
+  const s = Store.settings;
+  const len = r.len ?? textLen(r.text);
+  const ev = EVIDENCE.map((x) => ({ v: x.v, label: `${x.v} ${x.t}`, s: x.s }));
+  const pr = PROMO.map((x) => ({ v: x.v, label: x.t, s: x.s }));
+  const cf = [1, 2, 3, 4, 5].map((n) => ({ v: n, label: String(n) }));
+  const chip = (kind, name) => `<button type="button" class="chip ${kind}" data-act="chip" data-kind="${kind}" data-name="${esc(name)}" aria-pressed="${d.chips.includes(name)}">${esc(name)}</button>`;
+  v.innerHTML = `<div class="stack">
+    ${progressHTML()}
+    ${demo ? `<p class="note warn">예시 카드입니다. 눌러 볼 수는 있지만 저장되지 않습니다. 수집 화면에서 첫 리뷰를 붙여넣으세요.</p>` : ""}
+    <article class="slip" aria-label="판정할 리뷰">
+      <div class="slip-head">
+        <div><div class="slip-prod">${esc(p.name)}</div>
+        <div class="slip-sub">${[p.platform, p.category].filter(Boolean).map(esc).join(" · ")}${p.url ? ` · <a href="${esc(p.url)}" target="_blank" rel="noopener">원문 보기</a>` : ""}</div></div>
+        ${starsHTML(r.star)}
+      </div>
+      <div class="badges">${J.current.redo ? `<span class="badge redo">재판정 · 이전 답은 가려 둠</span>` : ""}${demo ? `<span class="badge demo">예시</span>` : ""}${(r.badges || []).map((b) => `<span class="badge ${b === "체험단" ? "trial" : ""}">${esc(b)}</span>`).join("")}</div>
+      <div class="slip-text">${esc(r.text)}</div>
+      <div class="slip-foot"><span class="num">${len}자 · ${lenBucket(len)}</span><span>${esc([r.date, r.option].filter(Boolean).join(" · "))}</span>${r.helpful != null ? `<span>도움 <span class="num">${r.helpful}</span></span>` : ""}</div>
+    </article>
+    <div class="judge">
+      <div class="axis"><div class="axis-head"><h3>실사용 증거</h3><span class="hint">실제로 써 본 흔적이 얼마나 구체적인가</span></div>${segHTML("ev", ev, "c4", d.evidence)}</div>
+      <div class="axis"><div class="axis-head"><h3>홍보·의심 신호</h3><span class="hint">광고나 대가성처럼 느껴지는가</span></div>${segHTML("pr", pr, "c3", d.promo)}</div>
+      <div class="row"><span class="small muted">파생 태그</span><span id="jTag" class="tag">두 축을 고르면 표시</span></div>
+      <div class="chip-group"><span class="eyebrow">실사용 근거</span><div class="chips">${s.evidenceChips.map((n) => chip("ev", n)).join("")}</div></div>
+      <div class="chip-group"><span class="eyebrow">의심 근거</span><div class="chips">${s.promoChips.map((n) => chip("pr", n)).join("")}</div></div>
+      <details class="more" ${d.confidence != null || d.note ? "open" : ""}><summary>확신도와 한 줄 메모</summary>
+        <div class="stack">
+          <div class="axis"><div class="axis-head"><h3>확신도</h3><span class="hint">1 헷갈림 · 5 확실</span></div>${segHTML("cf", cf, "c5 compact", d.confidence)}</div>
+          <label class="field">한 줄 메모<input type="text" id="jNote" maxlength="200" placeholder="예: 사용 기간은 있는데 문장이 상세페이지와 비슷함" value="${esc(d.note)}"></label>
+          ${demo ? "" : J.delAsk
+            ? `<div class="row"><span class="small" style="color:var(--sus)">이 리뷰를 풀에서 지웁니다.</span><button type="button" class="btn danger" data-act="delYes">지우기</button><button type="button" class="btn ghost" data-act="delNo">취소</button></div>`
+            : `<button type="button" class="btn ghost" data-act="delAsk">리뷰가 아니거나 잘못 나뉜 항목이면 지우기</button>`}
+        </div>
+      </details>
+    </div>
+    <div class="actions">
+      <div class="save-row">
+        <button type="button" class="btn ghost" data-act="undo" ${J.undo ? "" : "disabled"} aria-label="방금 판정 되돌리기">되돌리기</button>
+        <button type="button" class="btn ghost" data-act="skip">건너뛰기</button>
+        <button type="button" class="btn primary" data-act="save" id="jSave">저장하고 다음</button>
+      </div>
+      <div class="keys"><span><span class="kbd">0</span>~<span class="kbd">3</span> 실사용</span><span><span class="kbd">Q</span><span class="kbd">W</span><span class="kbd">E</span> 의심 없음·약함·강함</span><span><span class="kbd">Enter</span> 저장</span><span><span class="kbd">S</span> 건너뛰기</span><span><span class="kbd">Z</span> 되돌리기</span></div>
+    </div>
+  </div>`;
+  syncDraftUI();
+}
+
+function syncDraftUI() {
+  const v = $("#view-judge");
+  const d = J.draft;
+  if (!d) return;
+  v.querySelectorAll('[data-act="ev"]').forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.v === d.evidence)));
+  v.querySelectorAll('[data-act="pr"]').forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.v === d.promo)));
+  v.querySelectorAll('[data-act="cf"]').forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.v === d.confidence)));
+  v.querySelectorAll('[data-act="chip"]').forEach((b) => b.setAttribute("aria-pressed", String(d.chips.includes(b.dataset.name))));
+  const tagEl = $("#jTag");
+  const save = $("#jSave");
+  const ready = d.evidence != null && d.promo != null;
+  if (tagEl) {
+    if (ready) { const t = deriveTag(d.evidence, d.promo); tagEl.className = "tag " + TAG_CLASS[t]; tagEl.textContent = t; }
+    else { tagEl.className = "tag"; tagEl.textContent = "두 축을 고르면 표시"; }
+  }
+  if (save) save.disabled = !ready;
+}
+
+async function saveJudgment() {
+  const d = J.draft;
+  if (!J.current || d.evidence == null || d.promo == null) return;
+  const tag = deriveTag(d.evidence, d.promo);
+  if (J.current.id === "demo") {
+    toast(`예시라서 저장하지 않았습니다 · ${tag}`);
+    J.draft = newDraft();
+    renderJudge();
+    return;
+  }
+  const cur = Store.reviews.get(J.current.id);
+  if (!cur) return;
+  const r = clone(cur);
+  const redo = J.current.redo;
+  const entry = { evidence: d.evidence, promo: d.promo, confidence: d.confidence, chips: d.chips.slice(), note: d.note.trim(), tag, at: nowISO() };
+  if (redo) r.rejudge = entry;
+  else { entry.split = d.split || (Math.random() < (Number(Store.settings.holdoutRatio) || 0) ? "eval" : "train"); r.label = entry; }
+  J.undo = { before: clone(cur), entry, redo };
+  J.lastProductId = r.productId;
+  J.current = null;
+  J.draft = newDraft();
+  try {
+    await putDoc("reviews", r);
+    toast(redo ? "재판정을 저장했습니다" : `저장했습니다 · ${tag}`, 1400);
+  } catch (e) { toast(dbErrorText(e), 5000); }
+}
+
+async function undoLast() {
+  if (!J.undo) return;
+  const { before, entry, redo } = J.undo;
+  J.undo = null;
+  J.current = { id: before.id, redo };
+  J.draft = newDraft(entry);
+  try { await putDoc("reviews", before); toast("되돌렸습니다. 다시 고르세요.", 1600); }
+  catch (e) { toast(dbErrorText(e), 5000); }
+  renderJudge();
+}
+
+function skipCurrent() {
+  if (!J.current) return;
+  if (J.current.id !== "demo") J.skipped.add(J.current.id);
+  J.current = null;
+  J.draft = newDraft();
+  renderJudge();
+  if (Store.reviews.size) toast("건너뛰었습니다. 나중에 다시 나옵니다.", 1400);
+}
+
+$("#view-judge").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]");
+  if (!b || !J.draft) return;
+  const act = b.dataset.act;
+  const d = J.draft;
+  if (act === "ev") d.evidence = d.evidence === +b.dataset.v ? null : +b.dataset.v;
+  else if (act === "pr") d.promo = d.promo === +b.dataset.v ? null : +b.dataset.v;
+  else if (act === "cf") d.confidence = d.confidence === +b.dataset.v ? null : +b.dataset.v;
+  else if (act === "chip") {
+    const n = b.dataset.name;
+    d.chips = d.chips.includes(n) ? d.chips.filter((x) => x !== n) : [...d.chips, n];
+  }
+  else if (act === "save") return void saveJudgment();
+  else if (act === "skip") return skipCurrent();
+  else if (act === "undo") return void undoLast();
+  else if (act === "delAsk" || act === "delNo") { J.delAsk = act === "delAsk"; renderJudge(); if (J.delAsk) { const dt = $("#view-judge details.more"); if (dt) dt.open = true; } return; }
+  else if (act === "delYes") {
+    const id = J.current && J.current.id;
+    J.delAsk = false; J.current = null; J.draft = newDraft();
+    if (id && id !== "demo") removeDoc("reviews", id).then(() => toast("지웠습니다", 1400)).catch((err) => toast(dbErrorText(err), 5000));
+    renderJudge();
+    return;
+  }
+  syncDraftUI();
+});
+$("#view-judge").addEventListener("input", (e) => { if (e.target.id === "jNote" && J.draft) J.draft.note = e.target.value; });
+
+document.addEventListener("keydown", (e) => {
+  if ($("#view-judge").hidden || e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select") return;
+  if (!J.draft) return;
+  const c = e.code;
+  const digit = /^(Digit|Numpad)([0-3])$/.exec(c);
+  if (digit) { J.draft.evidence = +digit[2]; syncDraftUI(); e.preventDefault(); return; }
+  const promoKey = { KeyQ: 0, KeyW: 1, KeyE: 2 }[c];
+  if (promoKey !== undefined) { J.draft.promo = promoKey; syncDraftUI(); e.preventDefault(); return; }
+  if (c === "Enter" || c === "NumpadEnter") {
+    if (tag === "button") return;
+    e.preventDefault(); saveJudgment(); return;
+  }
+  if (c === "KeyS") { e.preventDefault(); skipCurrent(); return; }
+  if (c === "KeyZ") { e.preventDefault(); undoLast(); }
+});
+
+/* ---------- 수집 화면 ---------- */
+const C = { productId: null, showNew: false, delId: null, useAi: true, aiBlocked: false, parsing: false, ctl: null, saving: false, items: [], msg: "", msgKind: "" };
+const AI_OFF_CODES = ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"];
+
+function productCounts() {
+  const m = new Map();
+  for (const r of Store.reviews.values()) {
+    const c = m.get(r.productId) || { total: 0, done: 0 };
+    c.total++; if (r.label) c.done++;
+    m.set(r.productId, c);
+  }
+  return m;
+}
+function existingKeys() {
+  const s = new Set();
+  for (const r of Store.reviews.values()) s.add(r.productId + "|" + normText(r.text));
+  return s;
+}
+function markDuplicates() {
+  const keys = existingKeys();
+  const seen = new Set();
+  for (const it of C.items) {
+    const k = (C.productId || "") + "|" + normText(it.text);
+    it._dup = keys.has(k) || seen.has(k);
+    seen.add(k);
+  }
+}
+
+function renderCollect() {
+  const v = $("#view-collect");
+  if (!Store.ready) { v.innerHTML = `<div class="panel"><p class="muted"><span class="spin"></span> 데이터를 불러오는 중입니다.</p></div>`; return; }
+  const prods = [...Store.products.values()].sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  if (C.productId && !Store.products.has(C.productId)) C.productId = null;
+  if (!C.productId && prods.length) C.productId = prods[0].id;
+  const counts = productCounts();
+  const cats = [...new Set(prods.map((p) => p.category).filter(Boolean))];
+  const showForm = C.showNew || !prods.length;
+  const aiAvailable = !!Caps.sample && !C.aiBlocked;
+  const raw = $("#cRaw") ? $("#cRaw").value : C.raw || "";
+  const isExample = raw.trim() === EXAMPLE_PASTE.trim();
+  const live = C.items.filter((it) => !it._dup);
+  v.innerHTML = `<div class="stack">
+    <div class="panel">
+      <div class="row"><h2 class="grow">상품</h2>${prods.length ? `<button type="button" class="btn ghost" data-c="toggleNew">${showForm ? "닫기" : "새 상품 추가"}</button>` : ""}</div>
+      ${prods.length ? `<div class="prod-list">${prods.map((p) => {
+        const c = counts.get(p.id) || { total: 0, done: 0 };
+        const sel = p.id === C.productId;
+        const confirming = C.delId === p.id;
+        return `<div class="prod ${sel ? "sel" : ""}">
+          <div class="grow"><div class="name">${esc(p.name)}</div><div class="counts">${esc([p.platform, p.category].filter(Boolean).join(" · "))} · 리뷰 <span class="num">${c.total}</span> · 판정 <span class="num">${c.done}</span></div></div>
+          ${confirming
+            ? `<span class="small" style="color:var(--sus)">리뷰 ${c.total}개도 함께 지웁니다</span><button type="button" class="btn danger" data-c="delYes" data-id="${p.id}">삭제</button><button type="button" class="btn ghost" data-c="delNo">취소</button>`
+            : `${sel ? `<span class="badge redo">선택됨</span>` : `<button type="button" class="btn" data-c="select" data-id="${p.id}">선택</button>`}<button type="button" class="btn ghost" data-c="delAsk" data-id="${p.id}" aria-label="${esc(p.name)} 삭제">삭제</button>`}
+        </div>`; }).join("")}</div>` : `<p class="muted small">리뷰를 모을 상품부터 등록하세요.</p>`}
+      ${showForm ? `<form id="newProd" class="stack" autocomplete="off">
+        <label class="field">상품명<input type="text" id="npName" required maxlength="120" placeholder="예: 무선 핸디 청소기 A"></label>
+        <div class="row">
+          <label class="field grow">판매 채널<select id="npPlatform">${PLATFORMS.map((x) => `<option>${x}</option>`).join("")}</select></label>
+          <label class="field grow">카테고리<input type="text" id="npCat" list="catList" maxlength="40" placeholder="예: 생활가전"></label>
+        </div>
+        <datalist id="catList">${cats.map((c) => `<option value="${esc(c)}">`).join("")}</datalist>
+        <label class="field">원문 링크 (선택)<input type="url" id="npUrl" maxlength="500" placeholder="https://"></label>
+        <button type="submit" class="btn primary">상품 추가</button>
+      </form>` : ""}
+    </div>
+
+    <div class="panel">
+      <h2>리뷰 붙여넣기</h2>
+      <p class="small muted">상품 페이지의 리뷰 영역을 드래그하거나 길게 눌러 복사한 뒤 붙여넣으세요. 한 개만 붙여넣어도 됩니다. 닉네임과 사진은 저장하지 않습니다.</p>
+      <textarea id="cRaw" rows="8" placeholder="여기에 붙여넣기">${esc(raw)}</textarea>
+      <div class="row">
+        <button type="button" class="btn primary grow" data-c="parse" ${C.parsing ? "disabled" : ""}>${C.parsing ? `<span class="spin"></span> 나누는 중` : "리뷰로 나누기"}</button>
+        ${C.parsing ? `<button type="button" class="btn" data-c="stop">중지</button>` : ""}
+        <button type="button" class="btn ghost" data-c="example">예시 텍스트</button>
+        <button type="button" class="btn ghost" data-c="clear">비우기</button>
+      </div>
+      <div class="row small">
+        ${aiAvailable ? `<button type="button" class="toggle" data-c="ai" aria-pressed="${C.useAi}">AI로 나누기 ${C.useAi ? "켬" : "끔"}</button><span class="muted">끄면 날짜 줄을 기준으로 나눕니다.</span>` : `<span class="muted">날짜 줄을 기준으로 나눕니다. claude.ai에서 열면 AI로 나눌 수 있습니다.</span>`}
+      </div>
+      ${C.msg ? `<p class="note ${C.msgKind}">${esc(C.msg)}</p>` : ""}
+    </div>
+
+    ${C.items.length ? `<div class="panel">
+      <div class="row"><h2 class="grow">확인하고 풀에 넣기</h2><span class="small muted"><span class="num">${live.length}</span>개 추가 예정${C.items.length - live.length ? ` · 중복 <span class="num">${C.items.length - live.length}</span>개 제외` : ""}</span></div>
+      <p class="small muted">별점·날짜·표시가 틀렸으면 고치고, 리뷰가 아닌 항목은 지우세요. 쿠팡은 복사할 때 별점이 빠지는 경우가 많으니 목록에서 골라 주세요.</p>
+      <div class="preview">${C.items.map((it, i) => `<div class="pv ${it._dup ? "dup" : ""}">
+        <div class="pv-top">
+          <select data-i="${i}" data-f="star" aria-label="별점">${["", 1, 2, 3, 4, 5].map((n) => `<option value="${n}" ${String(it.star ?? "") === String(n) ? "selected" : ""}>${n ? "★" + n : "별점 없음"}</option>`).join("")}</select>
+          <input type="text" data-i="${i}" data-f="date" value="${esc(it.date)}" placeholder="YYYY-MM-DD" aria-label="작성일" maxlength="10">
+          ${BADGES.map((b) => `<button type="button" class="toggle" data-c="badge" data-i="${i}" data-b="${b}" aria-pressed="${(it.badges || []).includes(b)}">${b}</button>`).join("")}
+          <button type="button" class="btn ghost" data-c="drop" data-i="${i}" aria-label="이 항목 지우기">지우기</button>
+        </div>
+        <input type="text" data-i="${i}" data-f="option" value="${esc(it.option)}" placeholder="구매 옵션" aria-label="구매 옵션" maxlength="200">
+        <textarea data-i="${i}" data-f="text" rows="3" aria-label="리뷰 본문">${esc(it.text)}</textarea>
+        ${it._dup ? `<span class="small muted">이미 있는 리뷰라 제외합니다</span>` : ""}
+      </div>`).join("")}</div>
+      ${isExample ? `<p class="note warn">예시 텍스트는 나누기 결과만 보여 줍니다. 풀에는 넣을 수 없습니다.</p>` : ""}
+      ${!C.productId ? `<p class="note warn">위에서 상품을 먼저 추가하거나 선택하세요.</p>` : ""}
+      <button type="button" class="btn primary wide" data-c="add" ${C.saving || isExample || !C.productId || !live.length ? "disabled" : ""}>${C.saving ? `<span class="spin"></span> <span id="saveProg">저장 중</span>` : `${live.length}개 풀에 추가`}</button>
+    </div>` : ""}
+  </div>`;
+}
+
+async function doParse() {
+  const raw = $("#cRaw").value;
+  C.raw = raw;
+  if (!raw.trim()) { C.msg = "붙여넣은 텍스트가 없습니다."; C.msgKind = "warn"; renderCollect(); return; }
+  const product = Store.products.get(C.productId);
+  let items = null;
+  let msg = "", kind = "";
+  if (C.useAi && Caps.sample && !C.aiBlocked) {
+    C.parsing = true; C.ctl = new AbortController(); C.msg = ""; renderCollect();
+    try {
+      items = await aiParse(raw, product ? product.platform : "쇼핑몰", C.ctl.signal);
+      if (!items.length) { items = null; msg = "AI가 리뷰를 찾지 못해 규칙 기반으로 나눴습니다."; kind = "warn"; }
+      else {
+        msg = `AI로 ${items.length}개를 나눴습니다. 본문이 원문과 같은지 훑어보세요.`;
+        if (raw.length > PARSE_LIMIT) { msg += " 텍스트가 길어 앞부분만 나눴습니다. 나머지는 따로 붙여넣으세요."; kind = "warn"; }
+      }
+    } catch (e) {
+      C.parsing = false;
+      if (e && e.code === "cancelled") { C.msg = "나누기를 멈췄습니다."; C.msgKind = ""; renderCollect(); return; }
+      if (e && AI_OFF_CODES.includes(e.code)) C.aiBlocked = true;
+      msg = sampleErrorText(e); kind = "warn";
+    }
+    C.parsing = false;
+  }
+  if (!items) {
+    items = ruleParse(raw);
+    if (!msg) msg = items.length ? `${items.length}개를 찾았습니다. 경계가 맞는지 확인하세요.` : "";
+  }
+  if (!items.length) { msg = "리뷰를 찾지 못했습니다. 리뷰 사이에 빈 줄을 넣어 다시 붙여넣어 보세요."; kind = "bad"; }
+  C.items = items;
+  markDuplicates();
+  C.msg = msg; C.msgKind = kind;
+  renderCollect();
+}
+
+async function addToPool() {
+  const product = Store.products.get(C.productId);
+  if (!product) return;
+  markDuplicates();
+  const docs = C.items.filter((it) => !it._dup && textLen(it.text) >= 2).map((it) => ({
+    id: uid("r"), productId: product.id, platform: product.platform, source: "수동 붙여넣기",
+    star: it.star || null, date: it.date ? normDate(it.date) || "" : "", option: it.option || "", badges: it.badges || [],
+    helpful: it.helpful ?? null, text: it.text.trim(), len: textLen(it.text), createdAt: nowISO(), label: null, rejudge: null,
+  }));
+  if (!docs.length) return;
+  if (Store.reviews.size + Store.products.size + docs.length > DOC_CAP - 20) {
+    C.msg = `저장 한도(${DOC_CAP}개)에 가까워 추가할 수 없습니다. 설정에서 백업을 받은 뒤 오래된 리뷰를 지우세요.`; C.msgKind = "bad";
+    renderCollect(); return;
+  }
+  C.saving = true; renderCollect();
+  try {
+    await putMany("reviews", docs, (d, n) => { const el = $("#saveProg"); if (el) el.textContent = `저장 중 ${d}/${n}`; });
+    C.items = []; C.raw = ""; C.saving = false;
+    const ta = $("#cRaw"); if (ta) ta.value = "";
+    C.msg = `${docs.length}개를 판정 풀에 넣었습니다.`; C.msgKind = "good";
+  } catch (e) {
+    C.saving = false;
+    C.msg = dbErrorText(e); C.msgKind = "bad";
+  }
+  renderCollect();
+}
+
+$("#view-collect").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-c]");
+  if (!b) return;
+  const act = b.dataset.c;
+  const i = b.dataset.i != null ? +b.dataset.i : -1;
+  if (act === "toggleNew") { C.showNew = !C.showNew; renderCollect(); }
+  else if (act === "select") { C.productId = b.dataset.id; markDuplicates(); renderCollect(); }
+  else if (act === "delAsk") { C.delId = b.dataset.id; renderCollect(); }
+  else if (act === "delNo") { C.delId = null; renderCollect(); }
+  else if (act === "delYes") {
+    const id = b.dataset.id;
+    C.delId = null;
+    try {
+      const mine = allReviews().filter((r) => r.productId === id);
+      for (const r of mine) await removeDoc("reviews", r.id);
+      await removeDoc("products", id);
+      toast("상품과 리뷰를 지웠습니다");
+    } catch (err) { toast(dbErrorText(err), 5000); }
+  }
+  else if (act === "parse") doParse();
+  else if (act === "stop") { C.ctl && C.ctl.abort(); }
+  else if (act === "example") { $("#cRaw").value = EXAMPLE_PASTE; C.raw = EXAMPLE_PASTE; C.items = []; C.msg = "예시 텍스트를 넣었습니다. 리뷰로 나누기를 눌러 보세요."; C.msgKind = ""; renderCollect(); }
+  else if (act === "clear") { $("#cRaw").value = ""; C.raw = ""; C.items = []; C.msg = ""; renderCollect(); }
+  else if (act === "ai") { C.useAi = !C.useAi; renderCollect(); }
+  else if (act === "badge" && C.items[i]) {
+    const it = C.items[i]; const bb = b.dataset.b;
+    it.badges = (it.badges || []).includes(bb) ? it.badges.filter((x) => x !== bb) : [...(it.badges || []), bb];
+    b.setAttribute("aria-pressed", String(it.badges.includes(bb)));
+  }
+  else if (act === "drop" && C.items[i]) { C.items.splice(i, 1); renderCollect(); }
+  else if (act === "add") addToPool();
+});
+$("#view-collect").addEventListener("input", (e) => {
+  const t = e.target;
+  if (t.id === "cRaw") { C.raw = t.value; return; }
+  const i = t.dataset.i != null ? +t.dataset.i : -1;
+  if (i < 0 || !C.items[i]) return;
+  const f = t.dataset.f;
+  if (f === "star") C.items[i].star = t.value ? +t.value : null;
+  else if (f === "date" || f === "option" || f === "text") C.items[i][f] = t.value;
+});
+$("#view-collect").addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.dataset.f === "text") { markDuplicates(); renderCollect(); }
+});
+$("#view-collect").addEventListener("submit", async (e) => {
+  if (e.target.id !== "newProd") return;
+  e.preventDefault();
+  const name = $("#npName").value.trim();
+  if (!name) { $("#npName").focus(); return; }
+  const p = { id: uid("p"), name, platform: $("#npPlatform").value, category: $("#npCat").value.trim(), url: $("#npUrl").value.trim(), createdAt: nowISO() };
+  if (p.url && !/^https?:\/\//i.test(p.url)) p.url = "";
+  C.productId = p.id; C.showNew = false;
+  try { await putDoc("products", p); toast("상품을 추가했습니다"); }
+  catch (err) { toast(dbErrorText(err), 5000); }
+});
+
+/* ---------- 현황 화면 ---------- */
+function kappa(pairs) {
+  const n = pairs.length;
+  if (!n) return null;
+  const ca = {}, cb = {};
+  let po = 0;
+  for (const [a, b] of pairs) { if (a === b) po++; ca[a] = (ca[a] || 0) + 1; cb[b] = (cb[b] || 0) + 1; }
+  po /= n;
+  let pe = 0;
+  for (const c of new Set([...Object.keys(ca), ...Object.keys(cb)])) pe += ((ca[c] || 0) / n) * ((cb[c] || 0) / n);
+  if (pe >= 1) return po === 1 ? 1 : 0;
+  return (po - pe) / (1 - pe);
+}
+function kappaWord(k) {
+  if (k == null) return "";
+  if (k < 0.2) return "낮음";
+  if (k < 0.4) return "다소 낮음";
+  if (k < 0.6) return "보통";
+  if (k < 0.8) return "높음";
+  return "매우 높음";
+}
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+
+function stackBar(counts, total) {
+  if (!total) return `<div class="stack-bar"></div>`;
+  return `<div class="stack-bar" role="img" aria-label="${TAGS.map((t) => `${t} ${counts[t] || 0}개`).join(", ")}">${TAGS.map((t) =>
+    counts[t] ? `<i style="width:${(counts[t] / total) * 100}%;background:${TAG_COLOR[t]}"></i>` : "").join("")}</div>`;
+}
+
+function renderStats() {
+  const v = $("#view-stats");
+  if (!Store.ready) { v.innerHTML = `<div class="panel"><p class="muted"><span class="spin"></span> 데이터를 불러오는 중입니다.</p></div>`; return; }
+  const all = allReviews();
+  const labeled = all.filter((r) => r.label);
+  const redo = labeled.filter((r) => r.rejudge);
+  const evalN = labeled.filter((r) => r.label.split === "eval").length;
+  const docs = Store.reviews.size + Store.products.size + 1;
+  if (!all.length) {
+    v.innerHTML = `<div class="panel empty"><h2>아직 모은 리뷰가 없습니다</h2><p class="muted">리뷰를 모으고 판정하면 판정 분포, 자기 일치도, 길이 편향 점검이 여기에 나타납니다.</p><button class="btn primary" data-go="collect">리뷰 수집하러 가기</button></div>`;
+    return;
+  }
+  const tagCount = { "찐": 0, "애매": 0, "의심": 0 };
+  for (const r of labeled) tagCount[r.label.tag] = (tagCount[r.label.tag] || 0) + 1;
+
+  // 별점 × 길이 칸별 판정 수
+  const stars = [5, 4, 3, 2, 1, 0];
+  const cell = (st, lb) => {
+    const inCell = all.filter((r) => (r.star || 0) === st && lenBucket(r.len ?? textLen(r.text)) === lb);
+    const done = inCell.filter((r) => r.label).length;
+    const alpha = Math.min(60, done * 6);
+    return `<td class="cell"><span class="heat" style="background:color-mix(in srgb, var(--accent) ${alpha}%, transparent)">${done}<span class="muted">/${inCell.length}</span></span></td>`;
+  };
+
+  // 길이 구간별 태그 분포
+  const byLen = LEN_BUCKETS.map((lb) => {
+    const rs = labeled.filter((r) => lenBucket(r.len ?? textLen(r.text)) === lb);
+    const c = { "찐": 0, "애매": 0, "의심": 0 };
+    for (const r of rs) c[r.label.tag]++;
+    return { lb, n: rs.length, c };
+  });
+  const longSus = byLen[2].c["의심"];
+
+  // 자기 일치도
+  const k = redo.length >= 10 ? kappa(redo.map((r) => [r.label.tag, r.rejudge.tag])) : null;
+  const tagAgree = pct(redo.filter((r) => r.label.tag === r.rejudge.tag).length, redo.length);
+  const evNear = pct(redo.filter((r) => Math.abs(r.label.evidence - r.rejudge.evidence) <= 1).length, redo.length);
+  const prSame = pct(redo.filter((r) => r.label.promo === r.rejudge.promo).length, redo.length);
+
+  // 이유 칩 사용
+  const chipCount = new Map();
+  for (const r of labeled) for (const c of r.label.chips || []) chipCount.set(c, (chipCount.get(c) || 0) + 1);
+  const s = Store.settings;
+  const chipRows = [...s.evidenceChips.map((c) => [c, "ev"]), ...s.promoChips.map((c) => [c, "pr"])];
+  const chipMax = Math.max(1, ...chipRows.map(([c]) => chipCount.get(c) || 0));
+
+  // 상품별
+  const prodRows = [...Store.products.values()].map((p) => {
+    const rs = all.filter((r) => r.productId === p.id);
+    const ls = rs.filter((r) => r.label);
+    const c = { "찐": 0, "애매": 0, "의심": 0 };
+    for (const r of ls) c[r.label.tag]++;
+    return { p, total: rs.length, done: ls.length, c };
+  }).sort((a, b) => b.done - a.done);
+
+  v.innerHTML = `<div class="stack">
+    <div class="tiles">
+      <div class="tile"><div class="v">${labeled.length}</div><div class="k">판정 완료</div></div>
+      <div class="tile"><div class="v">${all.length - labeled.length}</div><div class="k">판정 대기</div></div>
+      <div class="tile"><div class="v">${redo.length}</div><div class="k">재판정</div></div>
+      <div class="tile"><div class="v">${evalN}</div><div class="k">평가용으로 떼어 둔 판정</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>판정 분포</h2>
+      ${stackBar(tagCount, labeled.length)}
+      <div class="legend">${TAGS.map((t) => `<span style="--c:${TAG_COLOR[t]}">${t} <b class="num">${tagCount[t]}</b> (${pct(tagCount[t], labeled.length)}%)</span>`).join("")}</div>
+    </div>
+
+    <div class="panel">
+      <h2>나와 나의 일치도</h2>
+      ${redo.length < 10
+        ? `<p class="note">재판정이 10개 이상 모이면 계산합니다. 지금 <b class="num">${redo.length}</b>개입니다. 재판정은 판정 후 ${Number(s.rejudgeMinDays) || 14}일이 지난 리뷰에서 가끔 나옵니다.</p>`
+        : `<div class="tiles">
+            <div class="tile"><div class="v">${k.toFixed(2)}</div><div class="k">코헨 카파 · ${kappaWord(k)}</div></div>
+            <div class="tile"><div class="v">${tagAgree}%</div><div class="k">파생 태그 일치</div></div>
+            <div class="tile"><div class="v">${evNear}%</div><div class="k">실사용 증거 ±1 이내</div></div>
+            <div class="tile"><div class="v">${prSame}%</div><div class="k">홍보·의심 일치</div></div>
+          </div>
+          <p class="small muted">이 값이 나중에 AI가 목표로 삼을 상한선입니다. 카파가 0.4보다 낮으면 설정에서 기준 칩을 다듬어 보세요.</p>`}
+    </div>
+
+    <div class="panel">
+      <h2>별점 × 길이 칸별 판정 수</h2>
+      <p class="small muted">판정 수 / 모은 수. 빈 칸이 많을수록 경계 사례가 부족합니다. 판정 화면은 적은 칸부터 먼저 보여 줍니다.</p>
+      <div class="scroll"><table class="t"><thead><tr><th>별점</th>${LEN_BUCKETS.map((lb) => `<th>${lb}</th>`).join("")}</tr></thead>
+      <tbody>${stars.map((st) => `<tr><td>${st ? "★" + st : "별점 없음"}</td>${LEN_BUCKETS.map((lb) => cell(st, lb)).join("")}</tr>`).join("")}</tbody></table></div>
+      <p class="small muted">짧음은 40자 미만, 긺은 150자 초과입니다.</p>
+    </div>
+
+    <div class="panel">
+      <h2>길이 편향 점검</h2>
+      ${byLen.map((x) => `<div class="hbar" style="grid-template-columns:minmax(60px,90px) 1fr auto"><span>${x.lb} <span class="muted num">${x.n}</span></span>${stackBar(x.c, x.n)}<span class="small num muted">찐 ${pct(x.c["찐"], x.n)}%</span></div>`).join("")}
+      <p class="note ${byLen[2].n >= 10 && longSus === 0 ? "warn" : ""}">${byLen[2].n >= 10 && longSus === 0
+        ? "긴 리뷰 중 의심 판정이 하나도 없습니다. 길이만 보고 판정하고 있지 않은지, 체험단형 긴 리뷰를 일부러 모아 보세요."
+        : "짧은 리뷰가 애매로 많이 가는 것은 자연스럽습니다. 긴 리뷰가 모두 찐으로 간다면 길이에 끌려가고 있다는 신호입니다."}</p>
+    </div>
+
+    <div class="panel">
+      <h2>이유 칩 사용</h2>
+      ${chipRows.map(([c, kind]) => {
+        const n = chipCount.get(c) || 0;
+        return `<div class="hbar"><span class="small">${esc(c)}</span><span class="track"><i style="width:${(n / chipMax) * 100}%;background:${kind === "ev" ? "var(--real)" : "var(--sus)"}"></i></span><span class="small num">${n}</span></div>`;
+      }).join("")}
+    </div>
+
+    <div class="panel">
+      <h2>상품별 판정 요약</h2>
+      <p class="small muted">판정한 리뷰만 기준으로 한 참고값입니다. 상품 선별 지표로 쓰려면 카테고리 안에서 비교하세요.</p>
+      <div class="scroll"><table class="t"><thead><tr><th>상품</th><th>리뷰</th><th>판정</th><th>찐</th><th>의심</th><th>분포</th></tr></thead>
+      <tbody>${prodRows.map((x) => `<tr><td>${esc(x.p.name)}<div class="small muted">${esc(x.p.category || "")}</div></td><td class="cell">${x.total}</td><td class="cell">${x.done}</td><td class="cell">${pct(x.c["찐"], x.done)}%</td><td class="cell">${pct(x.c["의심"], x.done)}%</td><td>${stackBar(x.c, x.done)}</td></tr>`).join("")}</tbody></table></div>
+    </div>
+
+    <p class="small muted">저장 문서 <span class="num">${docs}</span> / <span class="num">${DOC_CAP}</span></p>
+  </div>`;
+}
+
+/* ---------- 설정 · 내보내기 ---------- */
+const S = { importMsg: "", importKind: "" };
+function csvCell(v) {
+  const s = v == null ? "" : String(v);
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+function buildCSV() {
+  const head = ["ID", "상품", "판매 채널", "카테고리", "원문 링크", "별점", "작성일", "구매 옵션", "플랫폼 표시", "도움돼요", "글자 수", "리뷰 내용",
+    "수집 방식", "수집 일시", "실사용 증거(0-3)", "홍보·의심(0-2)", "확신도(1-5)", "이유 칩", "메모", "파생 태그", "판정 일시", "평가용 분리",
+    "재판정 실사용 증거", "재판정 홍보·의심", "재판정 태그", "재판정 일시"];
+  const rows = allReviews().sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt))).map((r) => {
+    const p = Store.products.get(r.productId) || {};
+    const l = r.label || {};
+    const x = r.rejudge || {};
+    return [r.id, p.name, p.platform || r.platform, p.category, p.url, r.star, r.date, r.option, (r.badges || []).join("|"), r.helpful,
+      r.len ?? textLen(r.text), r.text, r.source, r.createdAt, l.evidence, l.promo, l.confidence, (l.chips || []).join("|"), l.note, l.tag, l.at, l.split,
+      x.evidence, x.promo, x.tag, x.at];
+  });
+  return "﻿" + [head, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+}
+function buildJSON() {
+  return JSON.stringify({
+    app: "찐리뷰 노트", version: 1, exportedAt: nowISO(),
+    products: [...Store.products.values()], reviews: allReviews(), settings: Store.settings,
+  }, null, 1);
+}
+async function saveFile(filename, data, mime) {
+  if (Caps.downloads) {
+    try { await Caps.downloads.save({ filename, data }); toast("파일을 저장했습니다"); return; }
+    catch (e) {
+      if (e && e.code === "declined") return;
+      if (e && e.code === "rate_limited") { toast("잠시 뒤 다시 눌러 주세요"); return; }
+    }
+  }
+  if (window.claude) { toast("이 화면에서는 파일 저장을 쓸 수 없습니다.", 4000); return; }
+  const url = URL.createObjectURL(new Blob([data], { type: mime }));
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+const stamp = () => new Date().toISOString().slice(0, 10);
+
+function renderSettings() {
+  const v = $("#view-settings");
+  if (!Store.ready) { v.innerHTML = `<div class="panel"><p class="muted"><span class="spin"></span> 데이터를 불러오는 중입니다.</p></div>`; return; }
+  const s = Store.settings;
+  const opt = (vals, cur, fmt) => vals.map((x) => `<option value="${x}" ${Number(cur) === x ? "selected" : ""}>${fmt(x)}</option>`).join("");
+  const where = Store.mode === "db"
+    ? `<p class="note good">Claude 저장소에 저장됩니다. 같은 계정으로 휴대폰과 노트북에서 열면 같은 데이터가 보입니다.</p>`
+    : Store.mode === "local"
+      ? `<p class="note warn">이 브라우저에만 저장됩니다. 다른 기기와 공유하려면 claude.ai에 올린 페이지에서 쓰세요. 백업 파일을 자주 받아 두세요.</p>`
+      : `<p class="note bad">이 브라우저에서는 저장이 막혀 있어 새로고침하면 사라집니다. 백업 파일을 받아 두세요.</p>`;
+  v.innerHTML = `<div class="stack">
+    <div class="panel"><h2>저장 위치</h2>${where}</div>
+
+    <form class="panel" id="setForm" autocomplete="off">
+      <h2>판정 설정</h2>
+      <div class="row">
+        <label class="field grow">주간 목표<input type="number" id="sGoal" min="5" max="500" step="5" value="${Number(s.weeklyGoal) || 30}"></label>
+        <label class="field grow">재판정 비율<select id="sRatio">${opt([0, 0.05, 0.1, 0.15, 0.2], s.rejudgeRatio, (x) => Math.round(x * 100) + "%")}</select></label>
+      </div>
+      <div class="row">
+        <label class="field grow">재판정까지 최소 간격<select id="sDays">${opt([7, 14, 21, 30], s.rejudgeMinDays, (x) => x + "일")}</select></label>
+        <label class="field grow">평가용으로 떼어 둘 비율<select id="sHold">${opt([0.1, 0.2, 0.3], s.holdoutRatio, (x) => Math.round(x * 100) + "%")}</select></label>
+      </div>
+      <label class="field">실사용 근거 칩 (한 줄에 하나)<textarea id="sEv" rows="5">${esc(s.evidenceChips.join("\n"))}</textarea></label>
+      <label class="field">의심 근거 칩 (한 줄에 하나)<textarea id="sPr" rows="4">${esc(s.promoChips.join("\n"))}</textarea></label>
+      <p class="small muted">칩 이름을 바꾸면 이미 저장된 판정의 칩은 예전 이름으로 남습니다.</p>
+      <button type="submit" class="btn primary">설정 저장</button>
+    </form>
+
+    <div class="panel">
+      <h2>파생 태그 규칙</h2>
+      <p class="small">두 축에서 기존 3단계 태그를 자동으로 계산합니다.</p>
+      <div class="scroll"><table class="t"><thead><tr><th>태그</th><th>조건</th></tr></thead><tbody>
+        <tr><td><span class="tag real">찐</span></td><td style="text-align:left;white-space:normal">실사용 증거 2 이상이고 의심 신호 없음</td></tr>
+        <tr><td><span class="tag sus">의심</span></td><td style="text-align:left;white-space:normal">의심 신호 강함, 또는 의심 신호 약함이면서 실사용 증거 1 이하</td></tr>
+        <tr><td><span class="tag maybe">애매</span></td><td style="text-align:left;white-space:normal">그 밖의 모든 경우</td></tr>
+      </tbody></table></div>
+      <p class="small muted">'의심'은 개인 판단 기록입니다. 리뷰가 가짜라고 확정하는 뜻이 아니므로 외부에 공개하지 마세요.</p>
+    </div>
+
+    <div class="panel">
+      <h2>내보내기 · 가져오기</h2>
+      <div class="row">
+        <button type="button" class="btn grow" data-s="csv">엑셀용 CSV 받기</button>
+        <button type="button" class="btn grow" data-s="json">전체 백업 JSON 받기</button>
+      </div>
+      <label class="field">백업 JSON 가져오기 (이미 있는 항목은 건너뜀)<input type="file" id="sImport" accept="application/json,.json"></label>
+      ${S.importMsg ? `<p class="note ${S.importKind}">${esc(S.importMsg)}</p>` : ""}
+    </div>
+  </div>`;
+}
+
+$("#view-settings").addEventListener("submit", async (e) => {
+  if (e.target.id !== "setForm") return;
+  e.preventDefault();
+  const lines = (id) => [...new Set($(id).value.split(/\n|,/).map((x) => x.trim()).filter(Boolean))].slice(0, 20);
+  const next = {
+    ...Store.settings,
+    weeklyGoal: Math.min(500, Math.max(5, Number($("#sGoal").value) || 30)),
+    rejudgeRatio: Number($("#sRatio").value),
+    rejudgeMinDays: Number($("#sDays").value),
+    holdoutRatio: Number($("#sHold").value),
+    evidenceChips: lines("#sEv"),
+    promoChips: lines("#sPr"),
+  };
+  if (!next.evidenceChips.length) next.evidenceChips = DEFAULT_SETTINGS.evidenceChips.slice();
+  if (!next.promoChips.length) next.promoChips = DEFAULT_SETTINGS.promoChips.slice();
+  try { await putSettings(next); toast("설정을 저장했습니다"); } catch (err) { toast(dbErrorText(err), 5000); }
+});
+$("#view-settings").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-s]");
+  if (!b) return;
+  if (b.dataset.s === "csv") saveFile(`찐리뷰-판정-${stamp()}.csv`, buildCSV(), "text/csv");
+  if (b.dataset.s === "json") saveFile(`찐리뷰-백업-${stamp()}.json`, buildJSON(), "application/json");
+});
+$("#view-settings").addEventListener("change", (e) => {
+  if (e.target.id !== "sImport" || !e.target.files || !e.target.files[0]) return;
+  const file = e.target.files[0];
+  const fr = new FileReader();
+  fr.onload = async () => {
+    try {
+      const o = JSON.parse(String(fr.result));
+      const prods = (Array.isArray(o.products) ? o.products : []).filter((p) => p && p.id && p.name && !Store.products.has(p.id));
+      const revs = (Array.isArray(o.reviews) ? o.reviews : []).filter((r) => r && r.id && r.productId && typeof r.text === "string" && !Store.reviews.has(r.id));
+      if (Store.reviews.size + Store.products.size + prods.length + revs.length > DOC_CAP - 20) throw new Error("cap");
+      S.importMsg = `가져오는 중 0/${prods.length + revs.length}`; S.importKind = ""; renderSettings();
+      await putMany("products", prods);
+      await putMany("reviews", revs);
+      S.importMsg = `상품 ${prods.length}개, 리뷰 ${revs.length}개를 가져왔습니다.`; S.importKind = "good";
+    } catch (err) {
+      S.importMsg = err && err.message === "cap" ? `저장 한도(${DOC_CAP}개)를 넘어 가져올 수 없습니다.` : err && err.code ? dbErrorText(err) : "백업 파일을 읽지 못했습니다. 이 앱에서 받은 JSON 파일인지 확인하세요.";
+      S.importKind = "bad";
+    }
+    renderSettings();
+  };
+  fr.readAsText(file);
+});
+
+/* ---------- 화면 전환과 시작 ---------- */
+const VIEWS = ["judge", "collect", "stats", "settings"];
+const RENDER = { judge: renderJudge, collect: renderCollect, stats: renderStats, settings: renderSettings };
+let currentView = "judge";
+let pendingRender = false;
+
+function updateChrome() {
+  const pill = $("#storePill");
+  const m = Store.mode;
+  pill.className = "store-pill " + (m === "db" ? "ok" : m === "loading" ? "" : "local");
+  pill.textContent = m === "db" ? "기기 간 동기화" : m === "local" ? "이 기기에만 저장" : m === "memory" ? "저장 안 됨" : "불러오는 중";
+  const labeled = allReviews().filter((r) => r.label).length;
+  $("#navPool").textContent = `대기 ${poolCount()}`;
+  $("#navDone").textContent = `${labeled}개`;
+}
+function renderAll() {
+  updateChrome();
+  const el = $("#view-" + currentView);
+  const ae = document.activeElement;
+  if (ae && el.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) { pendingRender = true; return; }
+  pendingRender = false;
+  RENDER[currentView]();
+}
+document.addEventListener("focusout", () => {
+  if (!pendingRender) return;
+  setTimeout(() => {
+    const ae = document.activeElement;
+    if (!(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) renderAll();
+  }, 0);
+});
+function setView(name) {
+  if (!VIEWS.includes(name)) name = "judge";
+  currentView = name;
+  for (const n of VIEWS) {
+    $("#view-" + n).hidden = n !== name;
+    $("#tab-" + n).setAttribute("aria-selected", String(n === name));
+  }
+  try { localStorage.setItem(LS_KEY + "-tab", name); } catch {}
+  pendingRender = false;
+  RENDER[name]();
+  updateChrome();
+  window.scrollTo(0, 0);
+}
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("[data-view],[data-go]");
+  if (t) setView(t.dataset.view || t.dataset.go);
+});
+
+Store.onChange(renderAll);
+let startView = "judge";
+const hash = location.hash.replace("#", "");
+if (VIEWS.includes(hash)) startView = hash;
+else { try { const saved = localStorage.getItem(LS_KEY + "-tab"); if (VIEWS.includes(saved)) startView = saved; } catch {} }
+setView(startView);
+
+capability("db").then((db) => { if (db) initDb(db); else initLocal(); renderAll(); });
+capability("sample").then((x) => { Caps.sample = x; if (currentView === "collect") renderAll(); });
+capability("downloads").then((x) => { Caps.downloads = x; });
+})();
+</script>
